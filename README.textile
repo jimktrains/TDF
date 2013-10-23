@@ -1,0 +1,123 @@
+h2. Format
+
+Files and text fields are in UTF8, unless otherwise specified
+
+Delimiters (,) can be escaped by:
+
+table(ccn).
+|,| $% | 
+|;| %$ |
+|$| $$ |
+|%| %% |
+
+h2. Headers
+
+Headers will be formated as "RFC 2616":http://www.w3.org/Protocols/rfc2616/rfc2616-sec4.html#sec4.2 Headers (HTTP/1.1 header syntax). Headers should be sorted in lexical order.
+
+h3. Field definitions
+
+Fields definitions contain a Name, Type, and Encoding as key:comma-separated-lists sets and separated by semicolons.
+
+Name must correspond to a field name in the first line of the data.
+
+Optional attributes, such as Description may be included.
+
+Example:
+
+<pre>
+Field: Name: val; Type: Int; Encoding: Dec, UTF8;
+</pre>
+
+Alternatively:
+
+<pre>
+Field: Name: val;
+       Type: Int;
+       Encoding: Dec, UTF8;
+</pre>
+
+h3. Metadata
+
+table(ccn).
+|_. Header |_. value |_. Example |_. Comment|
+|Digest|digest hex-hash|sha1 yaUxx5mrIRyXNdovreYa/PFh0PE=|Calculated without this line and without expanding headers (they should each be on a single line)|
+|Last-Modified|"ISO 8601":https://en.wikipedia.org/wiki/ISO_8601 date|2013-08-06T08:52:00EST||
+|Signature|user;key fingerprint;signature|<pre>Jim <jim@example.com>;f642a8d2552281d792b52a17cbe79f3163b296f3;MIGHAkER9CmV5WJPB3hnk9eD31oqhAKWTsXVKubdIffMM9ocjU667p5yDh8xrOuOx0T8xx2NTQgmnDgsrPaXLK8WiMEaaQJCAYn2TwWkSVpgTM7oFg3O6r9ZTSRTnqZhxyk3g7O1SDHcqxohBREITiMsIFFNjv6m6sj/M8e4ndlaHZVgv5J/T+NR</pre>|Because of their size, EC keys are useful for this. Calculated without this line.|
+|Author|user|<pre>Jim <jim@example.com></pre>||
+|Description|Description|</pre>This data is awesome!</pre>||
+|Source|URL or description of the source of the data (where to go to find out more or who made it. May be repeated|<pre>http://example.com/data</pre> or <pre>Jim's Lab @ HisHouseU</pre>||
+
+h2. Types
+
+Types may be chained, _e.g._ <tt>Bin32,Float</tt>
+
+table(ccn).
+|_. Type|_. Comment|
+|Bin|Arbitrary binary data|
+|Integer| |
+|Float| |
+|UUID| "UUID":https://en.wikipedia.org/wiki/Universally_unique_identifier |
+|Text| Text |
+|Time| Date and/or Time|
+|CI| Field represents the confidence interval for the field defined in a For field in the header definition. Field definition must also have "Offset: Min" or "Offset: Max". Field definition must also contain a p-value field containing the p-value for this CI (0.05 => 95% interval)|
+|Geometry|Stores "Geometry":http://en.wikipedia.org/wiki/Well-known_text#Geometric_objects types|
+
+h2. Formats
+
+table(ccn).
+|_. Fomat |_. Comment|_. Types |
+|Dec| Decimal (default)|Int, Float, CI|
+|Hex| Hex encoded/"Base-16 Encoded":https://tools.ietf.org/html/rfc4648 |Bin, Int|
+|B32| "Base-32 Encoded":https://tools.ietf.org/html/rfc4648 |Bin|
+|B36| "Base-36 Encoded":http://en.wikipedia.org/wiki/Base_36 |Bin|
+|B58| "Base-58 Encoded":https://en.bitcoin.it/wiki/Base58Check_encoding |Bin|
+|B64| "Base-64 Encoded":https://tools.ietf.org/html/rfc4648 |Bin|
+|B85| "Base-85 Encoded":http://en.wikipedia.org/wiki/Ascii85 |Bin|
+|UU| "UUEncoded":http://en.wikipedia.org/wiki/Uuencoding |Bin|
+|XX| "XXEncoded":http://en.wikipedia.org/wiki/Xxencoding |Bin|
+|UTF8 | UTF-8 encoded text (Default)|All|
+|ASCII | ASCII Text |All|
+|Latin1 | "Latin1/ISO 8859/ Text":http://en.wikipedia.org/wiki/ISO/IEC_8859-1 |All|
+|WKT|"Well-Known Text":http://en.wikipedia.org/wiki/Well-known_text | Geometry|
+|WKB|"Well-Known Binary":http://en.wikipedia.org/wiki/Well-known_text#Well-known_binary | Geometry|
+|UDT| Unix Date Time |Time|
+|UMT| Unix Date Time, Miliseconds /Javascript Time | Time|
+|UNT| Unix Date Time, Nanoseconds |Time|
+|EDT| "Excel Date Time":http://support.microsoft.com/kb/214094 | Time |
+|WFT| "Windows File Time":http://msdn.microsoft.com/en-us/library/windows/desktop/ms724290(v=vs.85).aspx  | Time |
+|ISO8601| "ISO 8601":http://en.wikipedia.org/wiki/ISO_8601 format | Time|
+
+<pre>
+Author: Jim <jim@example.com>
+Description: This data was collected with a Blah Blah Spectrometer. The procedure can be found at http://example.com/proc
+Field: Name=Abs_ci_max; 
+       Type=CI;
+       Format= Dec; 
+       For=Absorption; 
+       Offset=max; 
+       p-value=0.05
+Field: Name= Abs_ci_min; 
+       Type= CI, Float; 
+       Format=Dec; 
+       For=Absorption; 
+       Offset=min;
+       p-value=0.05
+Field: Name=Absorption; 
+       Type=Float; 
+       Format=Dec; 
+       Description=Absorption at 520cm-1$% over 4 experiments
+Field: Name=Time; 
+       Type=Int; 
+       Format=Dec; 
+       Description=Seconds from starting
+Last-Modified: 2013-10-04T08:52:00EST
+
+Time, Absorption, Abs_ci_min, Abs_ci_max
+0,0.0,0.0,0.0
+10,1.0,0.0,3.0
+15,4.0,2.0,5.0
+20,9.0,6.0,12.0
+23,14.0,11.0,18.0
+</pre>
+
+Note: Windows File Time is in 100-nanosecond ticks since 12:00 A.M. January 1, 1601 UTC 
