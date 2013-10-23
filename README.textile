@@ -4,7 +4,6 @@ Files and text fields are in UTF8, unless otherwise specified
 
 Delimiters (,) can be escaped by:
 
-table(ccn).
 |,| $% | 
 |;| %$ |
 |$| $$ |
@@ -38,7 +37,6 @@ Field: Name: val;
 
 h3. Metadata
 
-table(ccn).
 |_. Header |_. value |_. Example |_. Comment|
 |Digest|digest hex-hash|sha1 yaUxx5mrIRyXNdovreYa/PFh0PE=|Calculated without this line and without expanding headers (they should each be on a single line)|
 |Last-Modified|"ISO 8601":https://en.wikipedia.org/wiki/ISO_8601 date|2013-08-06T08:52:00EST||
@@ -51,7 +49,6 @@ h2. Types
 
 Types may be chained, _e.g._ <tt>Bin32,Float</tt>
 
-table(ccn).
 |_. Type|_. Comment|
 |Bin|Arbitrary binary data|
 |Integer| |
@@ -64,7 +61,6 @@ table(ccn).
 
 h2. Formats
 
-table(ccn).
 |_. Fomat |_. Comment|_. Types |
 |Dec| Decimal (default)|Int, Float, CI|
 |Hex| Hex encoded/"Base-16 Encoded":https://tools.ietf.org/html/rfc4648 |Bin, Int|
